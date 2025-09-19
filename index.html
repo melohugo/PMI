@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ranking - PMI DF</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f7f7f7;
+            position: relative;
+            background-size: cover;
+        }
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: url('PMI_plano_de_fundo.webp');
+            background-repeat: repeat;
+            opacity: 0.1;
+            z-index: -1;
+        }
+        .gold { color: #ffd700; }
+        .silver { color: #c0c0c0; }
+        .bronze { color: #cd7f32; }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-800">
+
+    <div class="container mx-auto p-4 sm:p-6 lg:p-8 min-h-screen flex flex-col">
+
+        <header class="text-center mb-8 md:mb-12">
+            <img src="maior_pmi_mb_logo_hrz_fc_rgb.jpg" alt="Logo PMI" class="mx-auto w-64 md:w-80 mb-4 bg-white p-4 rounded-lg shadow-md">
+            <h1 class="text-3xl sm:text-4xl md:text-5xl font-bold text-gray-900">Ranking Oficial</h1>
+            <p class="text-lg text-gray-600 mt-2">Curso Básico de Gerenciamento de Projetos - 2025</p>
+        </header>
+
+        <main class="flex-grow">
+            <div class="bg-white rounded-2xl shadow-xl overflow-hidden">
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left">
+                        <thead class="bg-gray-800 text-white uppercase text-sm">
+                            <tr>
+                                <th class="p-4 w-1/6 text-center">Posição</th>
+                                <th class="p-4 w-3/6">Nome do Participante</th>
+                                <th class="p-4 w-2/6 text-right">Pontuação</th>
+                            </tr>
+                        </thead>
+                        <tbody id="ranking-body" class="divide-y divide-gray-200">
+                            <tr>
+                                <td colspan="3" class="p-8 text-center text-gray-500">
+                                    Carregando ranking...
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </main>
+
+        <footer class="text-center mt-8 md:mt-12 py-4">
+            <p class="text-gray-500">&copy; 2025 Project Management Institute - Distrito Federal. Todos os direitos reservados.</p>
+        </footer>
+
+    </div>
+
+    <script>
+
+        function renderRanking(rankingData) {
+            const rankingBody = document.getElementById('ranking-body');
+            
+            rankingBody.innerHTML = '';
+
+            const sortedData = rankingData.sort((a, b) => b.score - a.score);
+
+            sortedData.forEach((player, index) => {
+                const rank = index + 1;
+                const row = document.createElement('tr');
+                
+                if (rank === 1) {
+                    row.className = 'bg-yellow-50 font-bold';
+                } else if (rank === 2) {
+                    row.className = 'bg-gray-100';
+                } else if (rank === 3) {
+                    row.className = 'bg-orange-50';
+                }
+
+                let rankDisplay = rank;
+                if (rank === 1) {
+                    rankDisplay = '<span class="gold text-2xl">🏆</span>';
+                } else if (rank === 2) {
+                    rankDisplay = '<span class="silver text-2xl">🥈</span>';
+                } else if (rank === 3) {
+                    rankDisplay = '<span class="bronze text-2xl">🥉</span>';
+                }
+
+                row.innerHTML = `
+                    <td class="p-4 text-center align-middle text-lg font-semibold">${rankDisplay}</td>
+                    <td class="p-4 align-middle text-gray-700">${player.nome}</td>
+                    <td class="p-4 text-right align-middle text-blue-600 font-bold text-lg">${player.score.toLocaleString('pt-BR')}</td>
+                `;
+                
+                rankingBody.appendChild(row);
+            });
+        }
+
+        async function fetchDataRanking() {
+            const response = await fetch('./ranking.json');
+            const rankingData = await response.json();
+            renderRanking(rankingData);
+        }
+
+        document.addEventListener('DOMContentLoaded', fetchDataRanking);
+    </script>
+
+</body>
+</html>
+
