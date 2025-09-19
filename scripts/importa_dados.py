@@ -53,6 +53,9 @@ print("\n[cyan]Iniciando navegador e fazendo login...[/cyan]")
 
 firefox_options = Options()
 firefox_options.add_argument("--headless")
+firefox_options.add_argument("--disable-gpu")
+firefox_options.add_argument("--no-sandbox")
+firefox_options.add_argument("--window-size=1920,1080")
 
 servico = FirefoxService(GeckoDriverManager().install())
 navegador = webdriver.Firefox(service=servico, options=firefox_options)
@@ -100,8 +103,8 @@ for aula in aulas:
     print("\n[bold green]✔ Coleta de dados finalizada![/bold green]")
 
 saida = transforma_dados_para_ranking(dados)
-with open("../ranking.json", "w") as arquivo:
-    json.dump(saida, arquivo)
+with open("ranking.json", "w", encoding="utf-8") as arquivo:
+    json.dump(saida, arquivo, ensure_ascii=False, indent=2)
 
 print("\n[bold blue]Script finalizado com sucesso![/bold blue]")
 
