@@ -57,7 +57,9 @@ firefox_options.add_argument("--disable-gpu")
 firefox_options.add_argument("--no-sandbox")
 firefox_options.add_argument("--window-size=1920,1080")
 
-servico = FirefoxService(GeckoDriverManager().install())
+log_path = "geckodriver.log"
+servico = FirefoxService(GeckoDriverManager().install(), log_path=log_path)
+
 navegador = webdriver.Firefox(service=servico, options=firefox_options)
 
 navegador.get("https://edpuzzle.com/login")
