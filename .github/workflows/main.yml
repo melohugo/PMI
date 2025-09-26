@@ -20,31 +20,36 @@ jobs:
         uses: actions/setup-python@v4
         with:
           python-version: '3.10'
+      
+      - name: 3. Cache do WebDriver
+        uses: actions/cache@v3
+        with:
+          path: ~/.wdm/drivers
+          key: ${{ runner.os }}-geckodriver-${{ hashFiles('**/geckodriver.json') }} # Chave de cache mais específica
+          restore-keys: |
+            ${{ runner.os }}-geckodriver-
 
-      - name: 3. Instalar o Navegador Firefox
+      - name: 4. Instalar o Navegador Firefox
         run: |
           sudo apt-get update
           sudo apt-get install -y firefox
 
-      - name: 4. Instalar Dependências Python
+      - name: 5. Instalar Dependências Python
         run: |
           python -m pip install --upgrade pip
-          # Adicione todas as bibliotecas do seu script aqui
           pip install selenium webdriver-manager python-dotenv rich tqdm
 
-      - name: 5. Executar o Script de Web Scraping
+      - name: 6. Executar o Script de Web Scraping
         env:
           USUARIO: ${{ secrets.EDPUZZLE_USUARIO }}
           SENHA: ${{ secrets.EDPUZZLE_SENHA }}
         run: |
           python scripts/importa_dados.py
 
-      - name: 6. Fazer Commit e Push das Alterações
+      - name: 7. Fazer Commit e Push das Alterações
         run: |
           git config --global user.name 'github-actions[bot]'
           git config --global user.email 'github-actions[bot]@users.noreply.github.com'
-          # Adiciona TODOS os arquivos .json que foram gerados ou modificados
-          git add ./*.json
-          # O comando abaixo verifica se há mudanças para commitar, evitando commits vazios
+          git add ranking.json
           git diff --staged --quiet || git commit -m "📊 Atualização automática do ranking"
           git push
