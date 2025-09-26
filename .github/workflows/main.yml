@@ -24,10 +24,8 @@ jobs:
       - name: 3. Cache do WebDriver
         uses: actions/cache@v3
         with:
-          path: ~/.wdm/drivers
-          key: ${{ runner.os }}-geckodriver-${{ hashFiles('**/geckodriver.json') }}
-          restore-keys: |
-            ${{ runner.os }}-geckodriver-
+          path: ~/.wdm
+          key: ${{ runner.os }}-webdriver-cache-v1 # Uma chave simples e estável
 
       - name: 4. Instalar o Navegador Firefox
         run: |
@@ -47,10 +45,10 @@ jobs:
           python scripts/importa_dados.py
 
       - name: 7. Exibir logs do GeckoDriver em caso de falha
-        if: always()
+        if: failure()
         run: |
           echo "--- Exibindo conteúdo do geckodriver.log ---"
-          cat geckodriver.log
+          cat geckodriver.log || echo "geckodriver.log não encontrado."
           echo "--- Fim do log ---"
 
       - name: 8. Fazer Commit e Push das Alterações
