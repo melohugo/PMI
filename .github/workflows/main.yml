@@ -21,11 +21,10 @@ jobs:
         with:
           python-version: '3.10'
       
-      - name: 3. Cache do WebDriver
-        uses: actions/cache@v3
+      - name: 3. Instalar o Navegador Firefox
+        uses: moz-actions/setup-firefox@v4
         with:
-          path: ~/.wdm
-          key: ${{ runner.os }}-webdriver-cache-v1 # Uma chave simples e estável
+          firefox-version: 'latest'
 
       - name: 4. Instalar o Navegador Firefox
         run: |
