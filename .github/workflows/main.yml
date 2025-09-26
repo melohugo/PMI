@@ -25,7 +25,7 @@ jobs:
         uses: actions/cache@v3
         with:
           path: ~/.wdm/drivers
-          key: ${{ runner.os }}-geckodriver-${{ hashFiles('**/geckodriver.json') }} # Chave de cache mais específica
+          key: ${{ runner.os }}-geckodriver-${{ hashFiles('**/geckodriver.json') }}
           restore-keys: |
             ${{ runner.os }}-geckodriver-
 
@@ -46,7 +46,15 @@ jobs:
         run: |
           python scripts/importa_dados.py
 
-      - name: 7. Fazer Commit e Push das Alterações
+      - name: 7. Exibir logs do GeckoDriver em caso de falha
+        if: always()
+        run: |
+          echo "--- Exibindo conteúdo do geckodriver.log ---"
+          cat geckodriver.log
+          echo "--- Fim do log ---"
+
+      - name: 8. Fazer Commit e Push das Alterações
+        if: success()
         run: |
           git config --global user.name 'github-actions[bot]'
           git config --global user.email 'github-actions[bot]@users.noreply.github.com'
